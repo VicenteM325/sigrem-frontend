@@ -1,3 +1,8 @@
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { login as loginService } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
+
 import {
   Card,
   Input,
@@ -9,6 +14,24 @@ import { Link } from "react-router-dom";
 
 
 export function SignIn() {
+
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await loginService(email, password);
+      login(data);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Error en login");
+    }
+  };
   return (
     <section className="m-8 flex gap-4">
       <div className="w-full lg:w-3/5 mt-24">
@@ -21,13 +44,14 @@ export function SignIn() {
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
             </Typography>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
             <Input
               size="lg"
               placeholder="name@mail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+              labelProps={{ className: "before:content-none after:content-none" }}
             />
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Password
@@ -36,10 +60,10 @@ export function SignIn() {
               type="password"
               size="lg"
               placeholder="********"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
+              labelProps={{ className: "before:content-none after:content-none" }}
             />
           </div>
           <Checkbox
@@ -60,7 +84,7 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          <Button className="mt-6" fullWidth onClick={handleSubmit}>
             Sign In
           </Button>
 
