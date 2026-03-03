@@ -25,30 +25,36 @@ import {
   setOpenConfigurator,
   setOpenSidenav,
 } from "@/context";
+import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/auth/sign-in");
+  };
   return (
     <Navbar
       color={fixedNavbar ? "white" : "transparent"}
-      className={`rounded-xl transition-all ${
-        fixedNavbar
+      className={`rounded-xl transition-all ${fixedNavbar
           ? "sticky top-4 z-40 py-3 shadow-md shadow-blue-gray-500/5"
           : "px-0 py-1"
-      }`}
+        }`}
       fullWidth
       blurred={fixedNavbar}
     >
       <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
         <div className="capitalize">
           <Breadcrumbs
-            className={`bg-transparent p-0 transition-all ${
-              fixedNavbar ? "mt-1" : ""
-            }`}
+            className={`bg-transparent p-0 transition-all ${fixedNavbar ? "mt-1" : ""
+              }`}
           >
             <Link to={`/${layout}`}>
               <Typography
@@ -83,23 +89,28 @@ export function DashboardNavbar() {
           >
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
-          <Link to="/auth/sign-in">
+          {user ? (
             <Button
               variant="text"
               color="blue-gray"
-              className="hidden items-center gap-1 px-4 xl:flex normal-case"
+              className="hidden items-center gap-2 px-4 xl:flex normal-case"
+              onClick={handleLogout}
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-              Sign In
+              Logout
             </Button>
-            <IconButton
-              variant="text"
-              color="blue-gray"
-              className="grid xl:hidden"
-            >
-              <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-            </IconButton>
-          </Link>
+          ) : (
+            <Link to="/auth/sign-in">
+              <Button
+                variant="text"
+                color="blue-gray"
+                className="hidden items-center gap-2 px-4 xl:flex normal-case"
+              >
+                <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
+                Sign In
+              </Button>
+            </Link>
+          )}
           <Menu>
             <MenuHandler>
               <IconButton variant="text" color="blue-gray">

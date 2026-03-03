@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   ChartPieIcon,
   UserIcon,
@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Navbar, Footer } from "@/widgets/layout";
 import routes from "@/routes";
+import GuestRoute from "@/components/GuestRoute";
 
 export function Auth() {
   const navbarRoutes = [
@@ -39,9 +40,10 @@ export function Auth() {
           ({ layout, pages }) =>
             layout === "auth" &&
             pages.map(({ path, element }) => (
-              <Route exact path={path} element={element} />
+               <Route key={path} path={path} element={<GuestRoute>{element}</GuestRoute>} />
             ))
         )}
+        <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
       </Routes>
     </div>
   );

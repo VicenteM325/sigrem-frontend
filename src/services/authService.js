@@ -13,6 +13,14 @@ export const login = async (email, password) => {
     return response.data;
 };
 
-export const logout = () => {
-    localStorage.removeItem('user');
+export const logout = async (token) => {
+  await API.post(
+    "/logout",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
