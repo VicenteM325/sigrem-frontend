@@ -1,26 +1,21 @@
-import axios from "axios";
-
-const API = axios.create({
-    baseURL: "http://127.0.0.1:8000/api",
-});
+import api from './api';
 
 export const login = async (email, password) => {
-    const response = await API.post("/login", {
-        email,
-        password,
-    });
-
+  try {
+    const response = await api.post('/login', { email, password });
     return response.data;
+  } catch (error) {
+    console.error('Error en login:', error);
+    throw error;
+  }
 };
 
-export const logout = async (token) => {
-  await API.post(
-    "/logout",
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+export const logout = async () => {
+  try {
+    const response = await api.post('/logout');
+    return response.data;
+  } catch (error) {
+    console.error('Error en logout:', error);
+    throw error;
+  }
 };
