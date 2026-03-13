@@ -116,5 +116,14 @@ export const puntoVerdeService = {
       console.error('Error al obtener puntos verdes para mapa:', error);
       throw error;
     }
+  },
+   getForSelect: async () => {
+    try {
+      const response = await api.get('/puntos-verdes/select');
+      return response.data;
+    } catch (error) {
+      console.error('Error cargando puntos verdes:', error);
+      throw error;
+    }
   }
 };

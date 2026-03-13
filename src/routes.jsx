@@ -15,6 +15,7 @@ import {
   ClockIcon,
   CheckCircleIcon,
   ChartBarIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/solid";
 
 import { Home, Profile, Tables, Notifications, About } from "@/pages/dashboard";
@@ -34,6 +35,10 @@ import {
   PuntosVerdesList, PuntoVerdeForm, PuntoVerdeDetails,
   PuntosVerdesDashboard
 } from "@/pages/dashboard/puntos-verdes";
+import {
+  ContenedoresList, ContenedorForm} from "@/pages/dashboard/contenedores";
+import { 
+  EntregasList, EntregaForm, MisEntregas} from "@/pages/dashboard/reciclaje"
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -80,7 +85,7 @@ export const routes = [
         name: "rutas",
         path: "/rutas",
         element: <RutasList />,
-        roles: ["super-admin", "administrador", "supervisor-rutas"],
+        roles: ["super-admin", "administrador", "supervisor-rutas", "ciudadano"],
       },
 
       // CAMIONES
@@ -141,7 +146,15 @@ export const routes = [
         name: "dashboard puntos verdes",
         path: "/puntos-verdes/dashboard",
         element: <PuntosVerdesDashboard />,
-        roles: ["super-admin", "administrador", "encargado-punto-verde", "auditor"],
+        roles: ["super-admin", "administrador", "encargado-punto-verde", "auditor", "ciudadano"],
+      },
+
+      {
+        icon: <TruckIcon {...icon} />,
+        name: "contenedores",
+        path: "/contenedores",
+        element: <ContenedoresList />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
       },
 
       {
@@ -158,6 +171,21 @@ export const routes = [
         element: <Notifications />,
         roles: ["auditor", "administrador"],
       },
+      {
+        icon: <InformationCircleIcon {...icon} />, 
+        name: "reciclaje",
+        path: "/reciclaje",
+        element: <EntregasList />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
+      },
+      {
+        icon: <UserIcon {...icon} />,
+        name: "mis entregas",
+        path: "/reciclaje/mis-entregas",
+        element: <MisEntregas />,
+        roles: ["ciudadano"],
+      },
+
 
 
       // RUTAS OCULTAS
@@ -306,6 +334,22 @@ export const routes = [
         path: "/puntos-verdes/:id",
         element: <PuntoVerdeDetails />,
         roles: ["super-admin", "administrador", "encargado-punto-verde", "ciudadano"],
+        hidden: true,
+      },
+      //Contenedores ocultos
+      {
+        name: "nuevo contenedor",
+        path: "/contenedores/create",
+        element: <ContenedorForm />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
+        hidden: true,
+      },
+      //Reciclaje Entrega
+      {
+        name: "nueva entrega",
+        path: "/reciclaje/nueva-entrega",
+        element: <EntregaForm />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
         hidden: true,
       },
     ],

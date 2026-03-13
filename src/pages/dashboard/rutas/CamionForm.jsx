@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { Card, Typography, Button, Input, Select, Option } from '@material-tailwind/react';
+import { Card, Typography, Button, Input } from '@material-tailwind/react';
 import { camionService } from '@/services/camionService';
 
 const ESTADOS = [
@@ -19,7 +19,7 @@ export function CamionForm() {
     placa: '',
     capacidad_toneladas: '',
     estado_vehiculo: 'operativo',
-    id_conductor: null,
+    id_conductor: '',
   });
 
   const [conductores, setConductores] = useState([]);
@@ -47,12 +47,12 @@ export function CamionForm() {
       setLoading(true);
       const response = await camionService.getById(id);
       const camion = response.data.camion;
-      
+
       setFormData({
         placa: camion.placa || '',
         capacidad_toneladas: camion.capacidad || '',
         estado_vehiculo: camion.estado || 'operativo',
-        id_conductor: camion.conductor?.id || null,
+        id_conductor: camion.conductor?.id || '',
       });
     } catch (error) {
       console.error('Error cargando camión:', error);
@@ -67,22 +67,14 @@ export function CamionForm() {
       ...prev,
       [name]: value
     }));
-    // Limpiar error del campo
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
   };
 
-  const handleSelectChange = (value, name) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.placa.trim()) {
       newErrors.placa = 'La placa es requerida';
     } else if (formData.placa.length < 5) {
@@ -103,18 +95,24 @@ export function CamionForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       setLoading(true);
-      
+
+      // Convertir id_conductor vacío a null para la API
+      const dataToSend = {
+        ...formData,
+        id_conductor: formData.id_conductor === '' ? null : parseInt(formData.id_conductor)
+      };
+
       if (isEditing) {
-        await camionService.update(id, formData);
+        await camionService.update(id, dataToSend);
       } else {
-        await camionService.create(formData);
+        await camionService.create(dataToSend);
       }
-      
+
       navigate('/dashboard/camiones');
     } catch (error) {
       console.error('Error guardando camión:', error);
@@ -190,35 +188,46 @@ export function CamionForm() {
             )}
           </div>
 
-          {/* Estado */}
+          {/* Estado - Select nativo */}
           <div>
-            <Select
-              label="Estado"
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Estado
+            </label>
+            <select
+              name="estado_vehiculo"
               value={formData.estado_vehiculo}
-              onChange={(val) => handleSelectChange(val, 'estado_vehiculo')}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {ESTADOS.map((estado) => (
-                <Option key={estado.value} value={estado.value}>
+                <option key={estado.value} value={estado.value}>
                   {estado.label}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
           </div>
 
-          {/* Conductor */}
+          {/* Conductor - Select nativo */}
           <div>
-            <Select
-              label="Conductor (opcional)"
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Conductor (opcional)
+            </label>
+            <select
+              name="id_conductor"
               value={formData.id_conductor}
-              onChange={(val) => handleSelectChange(val, 'id_conductor')}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <Option value={null}>Sin conductor</Option>
+              <option value="">Sin conductor</option>
               {conductores.map((conductor) => (
-                <Option key={conductor.value} value={conductor.value}>
+                <option key={conductor.value} value={conductor.value}>
                   {conductor.label}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {conductores.length === 0 && 'No hay conductores disponibles'}
+            </p>
           </div>
 
           {/* Botones */}
