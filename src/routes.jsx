@@ -12,14 +12,28 @@ import {
   MapPinIcon,
   TruckIcon,
   CalendarIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  ChartBarIcon,
 } from "@heroicons/react/24/solid";
 
 import { Home, Profile, Tables, Notifications, About } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import { UserForm, UserDetails } from "@/pages/dashboard/users";
-import { RutasList, RutaForm, RutaDetails, ZonasList, 
-         ZonaForm, CamionesList, CamionForm, CamionDetails,
-         AsignacionesList, AsignacionForm, AsignacionDetails } from "@/pages/dashboard/rutas";
+import {
+  RecoleccionesEnProgreso, RecoleccionesPendientes,
+  RecoleccionesStats, RecoleccionDetails,
+  RecoleccionesList, RecoleccionEnProgreso
+} from "@/pages/dashboard/recolecciones";
+import {
+  RutasList, RutaForm, RutaDetails, ZonasList,
+  ZonaForm, CamionesList, CamionForm, CamionDetails,
+  AsignacionesList, AsignacionForm, AsignacionDetails
+} from "@/pages/dashboard/rutas";
+import {
+  PuntosVerdesList, PuntoVerdeForm, PuntoVerdeDetails,
+  PuntosVerdesDashboard
+} from "@/pages/dashboard/puntos-verdes";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -71,7 +85,7 @@ export const routes = [
 
       // CAMIONES
       {
-        icon: <TruckIcon {...icon} />, 
+        icon: <TruckIcon {...icon} />,
         name: "camiones",
         path: "/camiones",
         element: <CamionesList />,
@@ -84,6 +98,50 @@ export const routes = [
         path: "/asignaciones",
         element: <AsignacionesList />,
         roles: ["super-admin", "administrador", "supervisor-rutas"],
+      },
+      // RECOLECCIONES - PRINCIPALES
+      {
+        icon: <ClockIcon {...icon} />,
+        name: "recolecciones",
+        path: "/recolecciones",
+        element: <RecoleccionesList />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "conductor"],
+      },
+      {
+        icon: <ClockIcon {...icon} />,
+        name: "recolecciones pendientes",
+        path: "/recolecciones/pendientes",
+        element: <RecoleccionesPendientes />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "conductor", "operador-recoleccion"],
+      },
+      {
+        icon: <CheckCircleIcon {...icon} />,
+        name: "recolecciones en progreso",
+        path: "/recolecciones/en-progreso",
+        element: <RecoleccionesEnProgreso />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "conductor", "operador-recoleccion"],
+      },
+      {
+        icon: <ChartBarIcon {...icon} />,
+        name: "estadísticas recolección",
+        path: "/recolecciones/estadisticas",
+        element: <RecoleccionesStats />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "auditor"],
+      },
+      // PUNTOS VERDES
+      {
+        icon: <MapPinIcon {...icon} />,
+        name: "puntos verdes",
+        path: "/puntos-verdes",
+        element: <PuntosVerdesList />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde", "ciudadano"],
+      },
+      {
+        icon: <MapPinIcon {...icon} />,
+        name: "dashboard puntos verdes",
+        path: "/puntos-verdes/dashboard",
+        element: <PuntosVerdesDashboard />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde", "auditor"],
       },
 
       {
@@ -210,6 +268,44 @@ export const routes = [
         path: "/asignaciones/:id",
         element: <AsignacionDetails />,
         roles: ["super-admin", "administrador", "supervisor-rutas", "conductor"],
+        hidden: true,
+      },
+      {
+        name: "detalles recolección",
+        path: "/recolecciones/:id",
+        element: <RecoleccionDetails />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "conductor", "auditor"],
+        hidden: true,
+      },
+
+      {
+        name: "recolección en progreso",
+        path: "/recolecciones/en-progreso/:id",
+        element: <RecoleccionEnProgreso />,
+        roles: ["super-admin", "administrador", "supervisor-rutas", "conductor", "operador-recoleccion"],
+        hidden: true,
+      },
+
+      //Puntos verdes 
+      {
+        name: "nuevo punto verde",
+        path: "/puntos-verdes/create",
+        element: <PuntoVerdeForm />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
+        hidden: true,
+      },
+      {
+        name: "editar punto verde",
+        path: "/puntos-verdes/:id/edit",
+        element: <PuntoVerdeForm />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde"],
+        hidden: true,
+      },
+      {
+        name: "detalles punto verde",
+        path: "/puntos-verdes/:id",
+        element: <PuntoVerdeDetails />,
+        roles: ["super-admin", "administrador", "encargado-punto-verde", "ciudadano"],
         hidden: true,
       },
     ],
