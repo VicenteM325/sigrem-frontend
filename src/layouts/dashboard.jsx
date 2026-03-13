@@ -9,15 +9,25 @@ import {
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
+import useAuth from "@/hooks/useAuth";
+import { filterRoutesByRole, filterRoutesForNavigation } from "@/auth/menuByRole";
 
 export function Dashboard() {
+  const { roles } = useAuth();
+  
+  // Rutas para el menú lateral (filtradas por rol y ocultas)
+  const menuRoutes = filterRoutesByRole(routes, roles);
+  
+  // Rutas para la navegación (filtradas solo por rol, mantiene las ocultas)
+  const navigationRoutes = filterRoutesForNavigation(routes, roles);
+  
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav
-        routes={routes}
+        routes={menuRoutes} 
         brandImg={
           sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
         }
@@ -35,11 +45,11 @@ export function Dashboard() {
           <Cog6ToothIcon className="h-5 w-5" />
         </IconButton>
         <Routes>
-          {routes.map(
+          {navigationRoutes.map(
             ({ layout, pages }) =>
               layout === "dashboard" &&
               pages.map(({ path, element }) => (
-                <Route exact path={path} element={element} />
+                <Route key={path} path={path} element={element} />
               ))
           )}
         </Routes>

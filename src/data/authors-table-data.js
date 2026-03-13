@@ -2,10 +2,10 @@ export const authorsTableData = [
   {
     img: "/img/team-2.jpeg",
     name: "John Michael",
-    email: "john@creative-tim.com",
-    job: ["Manager", "Organization"],
+    email: "john@sigrem.com",
+    job: ["Conductor", "Conduce y recolecta"],
     online: true,
-    date: "23/04/18",
+    date: "29/02/26",
   },
   {
     img: "/img/team-1.jpeg",

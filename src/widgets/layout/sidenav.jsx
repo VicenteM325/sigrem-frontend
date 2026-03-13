@@ -96,8 +96,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
 }
 
 Sidenav.defaultProps = {
-  brandImg: "/img/logo-ct.png",
-  brandName: "Material Tailwind React",
+  brandImg: "/img/Sigrem.jpeg",
+  brandName: "S I G R E M",
 };
 
 Sidenav.propTypes = {
